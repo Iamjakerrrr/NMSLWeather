@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">NMSLWeather</string>
-    <string name="entity_name">name</string>
-    <string name="entity_code">id</string>
-    <string name="weather_id">weather_id</string>
     <string name="province">province</string>
     <string name="city">city</string>
     <string name="county">county</string>
-    <string name="province_of_china">http://guolin.tech/api/china/</string>
+    <string name="url_of_china">http://guolin.tech/api/china/</string>
+    <string name="fail_to_load">加载失败</string>
 </resources>

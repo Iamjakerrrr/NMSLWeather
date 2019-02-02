@@ -1,5 +1,6 @@
 package com.example.nmslweather;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,11 +44,18 @@ public class ChooseAreaFragment extends Fragment {
     private List<Province> provinceList = new ArrayList<>();
     private List<City> cityList = new ArrayList<>();
     private List<County> countyList = new ArrayList<>();
-    private ProgressBar progressBar;
+    private RelativeLayout progressBarLayout;
 
     private int currentLevel;
     private Province selectedProvince;
     private City selectedCity;
+
+    private static Resources resources = MyApplication.getContext().getResources();
+    private static String STRING_PROVINCE = resources.getString(R.string.province);
+    private static String STRING_CITY = resources.getString(R.string.city);
+    private static String STRING_COUNTY = resources.getString(R.string.county);
+    private static String STRING_URL_OF_CHINA = resources.getString(R.string.url_of_china);
+    private static String STRING_FAILT_TO_LOAD = resources.getString(R.string.fail_to_load);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +67,7 @@ public class ChooseAreaFragment extends Fragment {
         adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
-        progressBar = view.findViewById(R.id.progress_Bar);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         return view;
     }
 
@@ -100,8 +108,8 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         } else {
-            String address = "http://guolin.tech/api/china";
-            queryFromServer(address, "province");
+            String address = STRING_URL_OF_CHINA;
+            queryFromServer(address, STRING_PROVINCE);
         }
     }
 
@@ -119,9 +127,9 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
         } else {
-            String address = "http://guolin.tech/api/china/" +
+            String address = STRING_URL_OF_CHINA +
                     selectedProvince.getProvinceCode();
-            queryFromServer(address, "city");
+            queryFromServer(address, STRING_CITY);
         }
     }
 
@@ -139,20 +147,20 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
         } else {
-            String address = "http://guolin.tech/api/china/" + selectedProvince.getProvinceCode()
+            String address = STRING_URL_OF_CHINA + selectedProvince.getProvinceCode()
                     + "/" + selectedCity.getCityCode();
-            queryFromServer(address, "county");
+            queryFromServer(address, STRING_COUNTY);
         }
     }
 
     private void queryFromServer(String address, final String type) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(() -> {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    progressBarLayout.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getContext(), STRING_FAILT_TO_LOAD, Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -160,22 +168,22 @@ public class ChooseAreaFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 boolean result = false;
-                if (type.equals("province")) {
+                if (type.equals(STRING_PROVINCE)) {
                     result = Utility.handleProvinceResponse(responseText);
-                } else if (type.equals("city")) {
+                } else if (type.equals(STRING_CITY)) {
                     result = Utility.handleCityResponse(responseText, selectedProvince.getId());
-                } else if (type.equals("county")) {
+                } else if (type.equals(STRING_COUNTY)) {
                     result = Utility.handleCountyResponse(responseText, selectedCity.getId());
                 }
 
                 if (result) {
                     getActivity().runOnUiThread(() -> {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        if (type.equals("province")) {
+                        progressBarLayout.setVisibility(View.INVISIBLE);
+                        if (type.equals(STRING_PROVINCE)) {
                             queryProvinces();
-                        } else if (type.equals("city")) {
+                        } else if (type.equals(STRING_CITY)) {
                             queryCities();
-                        } else if (type.equals("county")) {
+                        } else if (type.equals(STRING_COUNTY)) {
                             queryCounties();
                         }
                     });
