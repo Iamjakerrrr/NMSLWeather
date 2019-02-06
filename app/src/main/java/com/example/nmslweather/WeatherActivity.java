@@ -1,17 +1,21 @@
 package com.example.nmslweather;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.nmslweather.gson.DailyForecast;
 import com.example.nmslweather.gson.Weather;
 import com.example.nmslweather.util.HttpUtil;
@@ -34,14 +38,20 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView comfortText;
     private TextView carWashText;
     private TextView sportText;
+    private ImageView bingPicImg;
 
     private static final String WEATHER_ACTIVITY = "WeatherActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_weather);
-
 
         weatherLayout = findViewById(R.id.weather_layout);
         titleCity = findViewById(R.id.title_city);
@@ -54,6 +64,8 @@ public class WeatherActivity extends AppCompatActivity {
         comfortText = findViewById(R.id.comfort_text);
         carWashText = findViewById(R.id.car_wash_text);
         sportText = findViewById(R.id.sport_text);
+        bingPicImg = findViewById(R.id.bing_pic_img);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
@@ -63,6 +75,13 @@ public class WeatherActivity extends AppCompatActivity {
             String weatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
+        }
+
+        String bingPic = prefs.getString("bing_pic", null);
+        if (bingPic != null) {
+            Glide.with(this).load(bingPic).into(bingPicImg);
+        } else {
+            loadBingPic();
         }
     }
 
@@ -102,7 +121,30 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
-    public void showWeatherInfo(Weather weather) {
+    private void loadBingPic() {
+        String url = getResources().getString(R.string.url_of_bing_pic);
+        HttpUtil.sendOkHttpRequest(url, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(WEATHER_ACTIVITY, Log.getStackTraceString(e));
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+//                String bingPicUrl = response.body().string();
+                String bingPicUrl = "https://konachan.com/jpeg/2119428571edb66aae81240b11c784e2/Konachan.com%20-%20278131%20clouds%20moon%20nobody%20original%20scenic%20shi_yu%20sky%20stars%20sunset.jpg";
+                SharedPreferences.Editor editor = PreferenceManager.
+                        getDefaultSharedPreferences(WeatherActivity.this).edit();
+                editor.putString("bing_pic", bingPicUrl);
+                editor.apply();
+                runOnUiThread(() -> {
+                    Glide.with(WeatherActivity.this).load(bingPicUrl).into(bingPicImg);
+                });
+            }
+        });
+    }
+
+    private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.location;
         String updateTime = weather.update.loc;
         String degree = weather.now.tmp;

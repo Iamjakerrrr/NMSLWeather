@@ -15,4 +15,5 @@
     <string name="comfort">舒适度：</string>
     <string name="car_wash_index">洗车指数：</string>
     <string name="sports_advice">运动建议：</string>
+    <string name="url_of_bing_pic">http://guolin.tech/api/bing_pic</string>
 </resources>
