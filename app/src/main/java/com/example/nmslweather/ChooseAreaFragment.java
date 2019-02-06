@@ -1,5 +1,6 @@
 package com.example.nmslweather;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -55,7 +56,7 @@ public class ChooseAreaFragment extends Fragment {
     private static String STRING_CITY = resources.getString(R.string.city);
     private static String STRING_COUNTY = resources.getString(R.string.county);
     private static String STRING_URL_OF_CHINA = resources.getString(R.string.url_of_china);
-    private static String STRING_FAILT_TO_LOAD = resources.getString(R.string.fail_to_load);
+    private static String STRING_FAILED_TO_LOAD = resources.getString(R.string.failed_to_load);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +83,12 @@ public class ChooseAreaFragment extends Fragment {
             } else if (currentLevel == LEVEL_CITY) {
                 selectedCity = cityList.get(position);
                 queryCounties();
+            } else if (currentLevel == LEVEL_COUNTY) {
+                String weatherId = countyList.get(position).getWeatherId();
+                Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                intent.putExtra("weather_id", weatherId);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 
@@ -160,7 +167,7 @@ public class ChooseAreaFragment extends Fragment {
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(() -> {
                     progressBarLayout.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getContext(), STRING_FAILT_TO_LOAD, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), STRING_FAILED_TO_LOAD, Toast.LENGTH_SHORT).show();
                 });
             }
 

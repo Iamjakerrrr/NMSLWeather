@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.nmslweather.db.City;
 import com.example.nmslweather.db.County;
 import com.example.nmslweather.db.Province;
+import com.example.nmslweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +15,18 @@ import org.json.JSONObject;
 
 public class Utility {
     private static final String UTILITY = "Utility";
+
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (Exception e) {
+            Log.d(UTILITY, Log.getStackTraceString(e));
+        }
+        return null;
+    }
 
     public static boolean handleProvinceResponse(String response) {
         if (!TextUtils.isEmpty(response)) {

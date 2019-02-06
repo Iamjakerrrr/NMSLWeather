@@ -4,5 +4,15 @@
     <string name="city">city</string>
     <string name="county">county</string>
     <string name="url_of_china">http://guolin.tech/api/china/</string>
-    <string name="fail_to_load">加载失败</string>
+    <string name="failed_to_load">加载失败</string>
+    <string name="forecast">预报</string>
+    <string name="air_quality">空气质量</string>
+    <string name="aqi_index">AQI指数</string>
+    <string name="pm25_index">PM2.5指数</string>
+    <string name="life_suggestion">生活建议</string>
+    <string name="weather_key">3ef8eeb3ae204885be358b42df10cda0</string>
+    <string name="failed_to_acquire_weather_info">获取天气信息失败</string>
+    <string name="comfort">舒适度：</string>
+    <string name="car_wash_index">洗车指数：</string>
+    <string name="sports_advice">运动建议：</string>
 </resources>
