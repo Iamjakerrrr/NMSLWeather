@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NMSLWeather</string>
+    <string name="app_name">NMSL天气</string>
     <string name="province">province</string>
     <string name="city">city</string>
     <string name="county">county</string>
