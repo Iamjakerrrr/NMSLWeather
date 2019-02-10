@@ -52,12 +52,15 @@ public class WeatherActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     private Button navButton;
 
+    private String nowWeatherId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        if (Build.VERSION.SDK_INT >= 21){
             View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
@@ -83,18 +86,17 @@ public class WeatherActivity extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
-        final String weatherId;
         if (weatherString != null) {
             Weather weather = Utility.handleWeatherResponse(weatherString);
-            weatherId = weather.basic.location;
+            nowWeatherId = weather.basic.location;
             showWeatherInfo(weather);
         } else {
-            weatherId = getIntent().getStringExtra("weather_id");
+            nowWeatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
-            requestWeather(weatherId);
+            requestWeather(nowWeatherId);
         }
         swipeRefresh.setOnRefreshListener(() -> {
-            requestWeather(weatherId);
+            requestWeather(nowWeatherId);
         });
 
         String bingPic = prefs.getString("bing_pic", null);
@@ -135,6 +137,7 @@ public class WeatherActivity extends AppCompatActivity {
                                 getDefaultSharedPreferences(WeatherActivity.this).edit();
                         editor.putString("weather", responseText);
                         editor.apply();
+                        nowWeatherId = weather.basic.location;
                         showWeatherInfo(weather);
                     } else {
                         Toast.makeText(WeatherActivity.this,
