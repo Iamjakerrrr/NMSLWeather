@@ -3,7 +3,7 @@
     <string name="province">province</string>
     <string name="city">city</string>
     <string name="county">county</string>
-    <string name="url_of_china">http://guolin.tech/api/china/</string>
+    <string name="url_of_china">http://guolin.tech/api/china</string>
     <string name="failed_to_load">加载失败</string>
     <string name="forecast">预报</string>
     <string name="air_quality">空气质量</string>

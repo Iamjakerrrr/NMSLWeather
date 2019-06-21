@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,8 +145,8 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
         } else {
-            String address = STRING_URL_OF_CHINA +
-                    selectedProvince.getProvinceCode();
+            String address = STRING_URL_OF_CHINA + "/"
+                    + selectedProvince.getProvinceCode();
             queryFromServer(address, STRING_CITY);
         }
     }
@@ -164,7 +165,7 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
         } else {
-            String address = STRING_URL_OF_CHINA + selectedProvince.getProvinceCode()
+            String address = STRING_URL_OF_CHINA + "/" + selectedProvince.getProvinceCode()
                     + "/" + selectedCity.getCityCode();
             queryFromServer(address, STRING_COUNTY);
         }
@@ -193,6 +194,7 @@ public class ChooseAreaFragment extends Fragment {
                     result = Utility.handleCountyResponse(responseText, selectedCity.getId());
                 }
 
+                Log.d("Http", "type = " + type + "result = " + result);
                 if (result) {
                     getActivity().runOnUiThread(() -> {
                         progressBarLayout.setVisibility(View.INVISIBLE);

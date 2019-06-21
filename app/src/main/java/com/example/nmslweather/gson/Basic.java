@@ -1,5 +1,6 @@
 package com.example.nmslweather.gson;
 
+
 public class Basic {
 //    public String cid;
     public String location;
